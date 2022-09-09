@@ -1,6 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  
+  router: {
+    middleware: ['auth'],
+  },
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
@@ -59,7 +63,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
