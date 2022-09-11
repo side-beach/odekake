@@ -1,8 +1,11 @@
-export default function ({ redirect, store, route})
-{
-    const isLogined = store.getters["auth/isLogined"]
+export default function ({ redirect, store, route }) {
+  const isLogined = store.getters["auth/isLogined"];
 
-    if (!isLogined && route.path !== '/login') {
-        redirect('/login');
-    }
+  if (
+    !isLogined &&
+    route.path !== "/auth/login" &&
+    route.path !== "/auth/signup"
+  ) {
+    redirect("/auth/login");
+  }
 }
