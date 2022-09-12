@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export default {
   name: "LoginPage",
   data: () => ({
@@ -83,16 +82,10 @@ export default {
       this.$refs.form.resetValidation();
     },
     login() {
-      const auth = getAuth(this.$firebase);
-      createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          console.log(userCredential.user);
-          console.log("User Regist Completed");
-        })
-        .catch((e) => {
-          alert(e.message);
-          console.error("error.", e);
-        });
+      this.$store.dispatch("auth/login", {
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };

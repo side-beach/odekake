@@ -33,7 +33,7 @@
         </v-btn>
 
         <h2><span>OR</span></h2>
-        <!-- SOCIAL Account Sign Up-->
+        <!-- SOCIAL Account Sign In-->
         <div class="text-center my-2">
           <v-btn class="mx-4" fab dark color="#1DA1F2">
             <v-icon dark> mdi-twitter </v-icon>
@@ -85,16 +85,10 @@ export default {
       this.$refs.form.resetValidation();
     },
     signup() {
-      const auth = getAuth(this.$firebase);
-      createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          console.log(userCredential.user);
-          console.log("User Regist Completed");
-        })
-        .catch((e) => {
-          alert(e.message);
-          console.error("error.", e);
-        });
+      this.$store.dispatch("auth/signup", {
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };
