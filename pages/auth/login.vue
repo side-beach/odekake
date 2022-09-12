@@ -41,7 +41,7 @@
           <v-btn class="mx-4" fab dark color="black">
             <v-icon dark> mdi-apple </v-icon>
           </v-btn>
-          <v-btn class="mx-4" fab dark color="#DD5144">
+          <v-btn @click="loginGoogle()" class="mx-4" fab dark color="#DD5144">
             <v-icon dark> mdi-google </v-icon>
           </v-btn>
         </div>
@@ -86,6 +86,9 @@ export default {
         email: this.email,
         password: this.password,
       });
+    },
+    loginGoogle() {
+      this.$store.dispatch("auth/googlelogin");
     },
   },
 };
