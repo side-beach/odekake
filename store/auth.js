@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  TwitterAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
 export const state = () => ({
@@ -44,13 +45,26 @@ export const actions = {
         alert(e);
       });
   },
-  async googlelogin({ dispatch }) {
+  async googleLogin({ dispatch }) {
     const auth = getAuth(this.$firebase);
     const provider = new GoogleAuthProvider();
 
     await signInWithPopup(auth, provider).then((user) => {
+      console.log(user)
       dispatch("addUserInfo", { uid: user.uid, email: user.email });
       this.$router.push("/");
+    });
+  },
+  async twitterLogin({dispatch}){
+    const auth = getAuth(this.$firebase);
+    const provider = new TwitterAuthProvider();
+
+    await signInWithPopup(auth, provider).then((user) => {
+      dispatch("addUserInfo", { uid: user.uid, email: user.email });
+      this.$router.push("/");
+    })
+    .catch(e=>{
+      console.log(e.message)
     });
   },
   async signup({ dispatch }, payload) {

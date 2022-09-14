@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       drawer: false,
+      group: 0,
     };
   },
   methods: {

@@ -31,24 +31,27 @@
         <v-btn :disabled="!valid" color="success" block @click="login()">
           ログイン
         </v-btn>
+        <div class="text-center mt-5">
+          アカウント作成は<nuxt-link to="/auth/signup">こちら</nuxt-link>
+        </div>
 
         <h2><span>OR</span></h2>
         <!-- SOCIAL Account Sign Up-->
         <div class="text-center my-2">
-          <v-btn class="mx-4" fab dark color="#1DA1F2">
-            <v-icon dark> mdi-twitter </v-icon>
-          </v-btn>
-          <v-btn class="mx-4" fab dark color="black">
-            <v-icon dark> mdi-apple </v-icon>
-          </v-btn>
-          <v-btn @click="loginGoogle()" class="mx-4" fab dark color="#DD5144">
-            <v-icon dark> mdi-google </v-icon>
-          </v-btn>
+          <div class="mb-3">
+            <v-btn @click="twitterLogin()" width="200" dark color="#1DA1F2">
+              <v-icon small dark> mdi-twitter </v-icon>
+              <span class="pl-1">Twitterでログイン</span>
+            </v-btn>
+          </div>
+          <div>
+            <v-btn @click="googleLogin()" width="200" dark color="#DD5144">
+              <v-icon small dark> mdi-google </v-icon>
+              <span class="pl-1">Googleでログイン</span>
+            </v-btn>
+          </div>
         </div>
       </v-form>
-      <p class="text-center mt-5">
-        アカウント作成は<nuxt-link to="/auth/signup">こちら</nuxt-link>
-      </p>
     </v-card>
   </div>
 </template>
@@ -87,8 +90,11 @@ export default {
         password: this.password,
       });
     },
-    loginGoogle() {
-      this.$store.dispatch("auth/googlelogin");
+    googleLogin() {
+      this.$store.dispatch("auth/googleLogin");
+    },
+    twitterLogin() {
+      this.$store.dispatch("auth/twitterLogin");
     },
   },
 };

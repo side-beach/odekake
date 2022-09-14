@@ -31,26 +31,11 @@
         <v-btn :disabled="!valid" color="success" block @click="signup()">
           アカウント作成
         </v-btn>
-
-        <h2><span>OR</span></h2>
-        <!-- SOCIAL Account Sign In-->
-        <div class="text-center my-2">
-          <v-btn class="mx-4" fab dark color="#1DA1F2">
-            <v-icon dark> mdi-twitter </v-icon>
-          </v-btn>
-          <v-btn class="mx-4" fab dark color="black">
-            <v-icon dark> mdi-apple </v-icon>
-          </v-btn>
-          <v-btn class="mx-4" fab dark color="#DD5144">
-            <v-icon dark> mdi-google </v-icon>
-          </v-btn>
-        </div>
       </v-form>
-      <p class="text-center mt-5">
-        既にアカウントをお持ちですか？<nuxt-link to="/auth/login"
-          >ログイン</nuxt-link
-        >
-      </p>
+      <div class="text-center mt-5">既にアカウントをお持ちですか？</div>
+      <div class="text-center">
+        <nuxt-link to="/auth/login">ログイン</nuxt-link>
+      </div>
     </v-card>
   </div>
 </template>
