@@ -7,6 +7,7 @@ import {
   TwitterAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+
 export const state = () => ({
   token: null,
   userUid: null,
@@ -71,7 +72,8 @@ export const actions = {
     const auth = getAuth(this.$firebase);
     await createUserWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
-        dispatch("login", { email: payload.email, password: payload.password });
+        dispatch("addUserInfo", { uid: userCredential.user.uid, email: userCredential.user.email });
+        // dispatch("login", { email: payload.email, password: payload.password });
       })
       .catch((e) => {
         if (e.message === "Firebase: Error (auth/email-already-in-use).") {

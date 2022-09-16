@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export default {
   name: "LoginPage",
   data: () => ({
@@ -60,20 +59,18 @@ export default {
   }),
 
   methods: {
-    validate() {
-      this.$refs.form.validate();
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
-    },
     signup() {
-      this.$store.dispatch("auth/signup", {
-        email: this.email,
-        password: this.password,
-      });
+      this.$store
+        .dispatch("auth/signup", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          // DBへ追加
+          const uid = this.$store.getters["auth/getUserUid"];
+          const email = this.$store.getters["auth/getEmail"];
+          this.$store.dispatch("addUser2DB", { uid, email });
+        });
     },
   },
 };
