@@ -1,56 +1,61 @@
 <template>
   <v-stepper v-model="page" flat>
     <v-stepper-header>
+      <!-- Snack for for validation-->
+      <v-snackbar centered :value="!valid" top color="red accesnt-2" elevation="24">
+        {{ errMsg }}
+      </v-snackbar>
       <v-stepper-step :complete="page > 1" step="1">基本情報</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="page > 2" step="2"> どこいく？ </v-stepper-step>
+      <v-stepper-step :complete="page > 2" step="2">どこいく？なにする？</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="page > 3" step="3"> </v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step :complete="page > 4" step="4"> </v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="5"> 性別 </v-stepper-step>
+      <v-stepper-step step="3">プロフィール</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
       <v-stepper-content step="1">
         <!-- ニックネーム、性別、居住地、生年月日-->
-        <v-card class="mb-6" width="500" outlined>
-          <v-form>
+        <v-card class="mb-6 mx-auto" width="500" flat>
+          <v-form v-model="valid" ref="form" lazy-validation>
             <v-container>
-              <v-row>
-                <v-col cols="8">
-                  <!-- NICK NAME -->
-                  <v-text-field
-                    v-model="userInfo.nickname"
-                    dense
-                    label="ニックネーム"
-                    outlined
-                    hide-details
-                    required
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="4">
-                  <!-- Prefecture -->
-                  <v-combobox
-                    v-model="userInfo.pref"
-                    :items="prefs"
-                    label="お住まい"
-                    outlined
-                    hide-details
-                    dense
-                  ></v-combobox>
-                </v-col>
-                <v-col cols="12">
-                  <!-- Gender -->
-                  <v-radio-group v-model="userInfo.gender" class="mt-0" dense hide-details row>
-                    <v-radio label="男" value="male"></v-radio>
-                    <v-radio label="女" value="femail"></v-radio>
-                    <v-radio label="その他" value="other"></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
+              <!-- NICK NAME -->
+              <v-text-field
+                v-model="userInfo.nickname"
+                dense
+                label="ニックネーム"
+                outlined
+                hide-details
+                required
+                :rules="[(v) => !!v || 'required']"
+                class="mb-5"
+              ></v-text-field>
+              <!-- Prefecture -->
+              <v-combobox
+                v-model="userInfo.pref"
+                :items="prefs"
+                label="お住まい"
+                outlined
+                hide-details
+                dense
+                :rules="[(v) => !!v || 'required']"
+                required
+              ></v-combobox>
+              <v-col cols="12">
+                <!-- Gender -->
+                <v-radio-group
+                  v-model="userInfo.gender"
+                  required
+                  class="mt-0"
+                  dense
+                  hide-details
+                  :rules="[(v) => !!v || 'required']"
+                  row
+                >
+                  <v-radio label="男" value="male"></v-radio>
+                  <v-radio label="女" value="femail"></v-radio>
+                  <v-radio label="その他" value="other"></v-radio>
+                </v-radio-group>
+              </v-col>
 
               <!-- Birth Day-->
               <v-row>
@@ -61,7 +66,10 @@
                     v-model="userInfo.birthDay.year"
                     @change="resetDay"
                     filled
+                    hide-details
                     dense
+                    required
+                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
                 <v-col cols="3">
@@ -72,6 +80,9 @@
                     @change="resetDay"
                     filled
                     dense
+                    hide-details
+                    required
+                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
                 <v-col cols="3">
@@ -81,32 +92,64 @@
                     v-model="userInfo.birthDay.day"
                     filled
                     dense
+                    hide-details
+                    required
+                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
               </v-row>
             </v-container>
           </v-form>
+          <div class="text-center">
+            <v-btn block color="primary" x-large @click="validate('step1')"> 次へ進む </v-btn>
+          </div>
         </v-card>
-
-        <v-btn color="primary" @click="page = 2"> Continue </v-btn>
-
-        <v-btn text> Cancel </v-btn>
       </v-stepper-content>
-
+      <!-- 
+        STEP 2 WHERE DO YOU LIKE TO GO ?
+      -->
       <v-stepper-content step="2">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-        <v-btn color="primary" @click="page = 3"> Continue </v-btn>
-
-        <v-btn text> Cancel </v-btn>
+        <v-card class="mb-6" flat>
+          <v-chip-group column multiple v-model="hobby">
+            <v-chip
+              v-for="(tag, i) in hobbies"
+              :key="i"
+              :value="tag.type"
+              filter
+              outlined
+              color="success"
+            >
+              <v-icon left>
+                {{ tag.icon }}
+              </v-icon>
+              {{ tag.type }}
+            </v-chip>
+          </v-chip-group>
+        </v-card>
+        <div class="text-center">
+          <v-btn x-large text @click="page = 1"> 前に戻る </v-btn>
+          <v-btn x-large color="primary" @click="validate('step2')"> 次へ進む </v-btn>
+        </div>
       </v-stepper-content>
-
+      <!-- 
+        Profile Input
+      -->
       <v-stepper-content step="3">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-        <v-btn color="primary" @click="page = 1"> Continue </v-btn>
-
-        <v-btn text> Cancel </v-btn>
+        <v-card flat>
+          <v-text-field
+            outlined
+            v-model="userInfo.profile"
+            label="自己紹介"
+            auto-grow
+            dense
+            hint="例: 一緒にキャンプへ行ってくれる人募集！"
+          >
+          </v-text-field>
+        </v-card>
+        <div class="text-center">
+          <v-btn x-large text @click="page = 2"> 前に戻る </v-btn>
+          <v-btn x-large color="primary" @click="validate('step3')"> 登録する </v-btn>
+        </div>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -123,7 +166,11 @@ export default {
         gender: null,
         pref: null,
         birthDay: { year: null, month: null, day: null },
+        hiddenBD: false,
+        profile: null,
       },
+      valid: true,
+      errMsg: '',
       prefs: [
         '北海道',
         '青森県',
@@ -173,17 +220,59 @@ export default {
         '鹿児島県',
         '沖縄県',
       ],
+      hobbies: [
+        { type: '登山', icon: 'mdi-hiking' },
+        { type: '天体観測', icon: 'mdi-weather-night' },
+        { type: 'サウナ', icon: 'mdi-account-cowboy-hat-outline' },
+        { type: 'キャンプ', icon: 'mdi-campfire' },
+        { type: '飲み歩き', icon: 'mdi-beer-outline' },
+        { type: 'サバイバルゲーム', icon: 'mdi-pistol' },
+        { type: '海水浴', icon: 'mdi-beach' },
+        { type: '釣り', icon: 'mdi-fish' },
+        { type: 'サイクリング', icon: 'mdi-bike' },
+        { type: 'スキー', icon: 'mdi-ski' },
+        { type: 'スノーボード', icon: 'mdi-snowboard' },
+        { type: 'サーフィン', icon: 'mdi-surfing' },
+        { type: 'ドローン', icon: 'mdi-drone' },
+        { type: 'ツーリング', icon: 'mdi-motorbike' },
+      ],
+      hobby: [],
     };
   },
   methods: {
     resetDay() {
       this.day = '';
     },
+    validate(step) {
+      if (step === 'step1') {
+        if (!this.$refs.form.validate()) {
+          this.errMsg = '未入力の項目があります';
+          return;
+        }
+      } else if (step === 'step2') {
+        if (this.hobby.length === 0) {
+          this.errMsg = '趣味をどれか1つ以上選択してください';
+          this.valid = false;
+          return;
+        }
+      } else if (step === 'step3') {
+        if (!!this.userInfo.profile) {
+          this.errMsg = '何かプロフィールに入力してください';
+          return;
+        }
+        this.regist();
+      }
+
+      this.page += 1;
+    },
+    regist() {
+      console.log(this.hobby);
+    },
   },
   computed: {
     years() {
       const years = [];
-      for (let year = 1900; year <= new Date().getFullYear(); year++) {
+      for (let year = new Date().getFullYear(); year >= 1900; year--) {
         years.push(year);
       }
       return years;
@@ -193,6 +282,7 @@ export default {
       return months;
     },
     days() {
+      // うるうどしの計算
       let days = [];
       if (
         (this.userInfo.birthDay.month === 2 &&
