@@ -1,7 +1,7 @@
 <template>
   <v-stepper v-model="page" flat>
     <v-stepper-header>
-      <!-- Snack for for validation-->
+      <!-- Snack for validation-->
       <v-snackbar centered :value="!valid" top color="red accesnt-2" elevation="24">
         {{ errMsg }}
       </v-snackbar>
@@ -20,7 +20,7 @@
             <v-container>
               <!-- NICK NAME -->
               <v-text-field
-                v-model="userInfo.nickname"
+                v-model="userInfo.nickName"
                 dense
                 label="ニックネーム"
                 outlined
@@ -247,7 +247,7 @@ export default {
       if (step === 'step1') {
         if (!this.$refs.form.validate()) {
           this.errMsg = '未入力の項目があります';
-          return;
+          // return;
         }
       } else if (step === 'step2') {
         if (this.hobby.length === 0) {
@@ -256,8 +256,11 @@ export default {
           return;
         }
       } else if (step === 'step3') {
-        if (!!this.userInfo.profile) {
+        // console.log(this.userInfo.profile);
+        // nullだったら
+        if (!this.userInfo.profile) {
           this.errMsg = '何かプロフィールに入力してください';
+          this.valid = false;
           return;
         }
         this.regist();
@@ -266,7 +269,8 @@ export default {
       this.page += 1;
     },
     regist() {
-      console.log(this.hobby);
+      // console.log(this.userInfo);
+      this.$store.dispatch('updateUserInfo', this.userInfo);
     },
   },
   computed: {
