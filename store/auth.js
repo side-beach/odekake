@@ -12,6 +12,7 @@ export const state = () => ({
   token: null,
   userUid: null,
   email: null,
+  isNew:false
 });
 
 export const getters = {
@@ -78,6 +79,8 @@ export const actions = {
       .catch((e) => {
         if (e.message === "Firebase: Error (auth/email-already-in-use).") {
           alert("このメールアドレスはすでに使用されています");
+        }else{
+          alert(e)
         }
       });
   },
@@ -98,5 +101,6 @@ export const actions = {
     commit("setLogin", true);
     commit("setUserUid", payload.uid);
     commit("setEmail", payload.email);
+    console.log(payload)
   },
 };

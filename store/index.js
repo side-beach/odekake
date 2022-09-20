@@ -2,13 +2,11 @@ import {
   getFirestore,
   collection,
   doc,
-  getDoc,
   addDoc, // ランダムなDocIDを作成して追加
   setDoc, // DocIDを指定して追加
   updateDoc,
   query,
   where,
-  onSnapshot,
   getDocs,
 } from 'firebase/firestore';
 
@@ -26,11 +24,13 @@ export const actions = {
   },
   async addUser2DB({ commit }, payload) {
     const db = getFirestore();
-    const docRef = addDoc(collection(db, 'users'), {
+    const docRef = await addDoc(collection(db, 'users'), {
       uid: payload.uid,
       email: payload.email,
+      isNew: true
     });
-    console.log('Document written with ID: ', docRef.id);
+    this.$router.push("/entry");
+    // console.log('Document written with ID: ', docRef.id);
   },
   // Update user info when user signs up for first time.
   async updateUserInfo({ getters }, payload) {
@@ -50,7 +50,7 @@ export const actions = {
     userInfo.uid = uid;
     userInfo.email = getters['auth/getEmail'];
     const userRef = doc(db, 'users', docID);
-    setDoc(userRef, userInfo);
+    await updateDoc(userRef, userInfo);
   },
 };
 

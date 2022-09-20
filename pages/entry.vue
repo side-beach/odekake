@@ -16,7 +16,7 @@
       <v-stepper-content step="1">
         <!-- ニックネーム、性別、居住地、生年月日-->
         <v-card class="mb-6 mx-auto" width="500" flat>
-          <v-form v-model="valid" ref="form" lazy-validation>
+          <v-form ref="form">
             <v-container>
               <!-- NICK NAME -->
               <v-text-field
@@ -26,8 +26,8 @@
                 outlined
                 hide-details
                 required
-                :rules="[(v) => !!v || 'required']"
                 class="mb-5"
+                :error="errors.step1.nickName"
               ></v-text-field>
               <!-- Prefecture -->
               <v-combobox
@@ -37,7 +37,7 @@
                 outlined
                 hide-details
                 dense
-                :rules="[(v) => !!v || 'required']"
+                :error="errors.step1.pref"
                 required
               ></v-combobox>
               <v-col cols="12">
@@ -48,7 +48,7 @@
                   class="mt-0"
                   dense
                   hide-details
-                  :rules="[(v) => !!v || 'required']"
+                  :error="errors.step1.gender"
                   row
                 >
                   <v-radio label="男" value="male"></v-radio>
@@ -68,8 +68,8 @@
                     filled
                     hide-details
                     dense
+                    :error="errors.step1.birthDay.year"
                     required
-                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
                 <v-col cols="3">
@@ -81,8 +81,8 @@
                     filled
                     dense
                     hide-details
+                    :error="errors.step1.birthDay.month"
                     required
-                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
                 <v-col cols="3">
@@ -93,8 +93,8 @@
                     filled
                     dense
                     hide-details
+                    :error="errors.step1.birthDay.day"
                     required
-                    :rules="[(v) => !!v || 'required']"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -137,6 +137,7 @@
       <v-stepper-content step="3">
         <v-card flat>
           <v-text-field
+            class="mt-5"
             outlined
             v-model="userInfo.profile"
             label="自己紹介"
@@ -170,6 +171,20 @@ export default {
         profile: null,
       },
       valid: true,
+      errors: {
+        step1: {
+          nickName: false,
+          gender: false,
+          pref: false,
+          birthDay: { year: false, month: false, day: false },
+        },
+        step2: {
+          hobby: false,
+        },
+        step3: {
+          profile: false,
+        },
+      },
       errMsg: '',
       prefs: [
         '北海道',
@@ -245,9 +260,26 @@ export default {
     },
     validate(step) {
       if (step === 'step1') {
-        if (!this.$refs.form.validate()) {
+        this.valid = true;
+        let isValid = true;
+        for (let key in this.errors.step1) {
+          if (this.userInfo[key] === null) {
+            this.errors.step1[key] = true;
+            isValid = false;
+          } else if (key === 'birthDay') {
+            for (let key in this.errors.step1.birthDay) {
+              if (this.userInfo.birthDay[key] == null) {
+                this.errors.step1.birthDay[key] = true;
+                isValid = false;
+              }
+            }
+          }
+        }
+
+        if (!isValid) {
+          this.valid = false;
           this.errMsg = '未入力の項目があります';
-          // return;
+          return;
         }
       } else if (step === 'step2') {
         if (this.hobby.length === 0) {
