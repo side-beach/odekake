@@ -28,9 +28,7 @@
           required
         ></v-text-field>
 
-        <v-btn :disabled="!valid" color="success" block @click="signup()">
-          アカウント作成
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" block @click="signup()"> アカウント作成 </v-btn>
       </v-form>
       <div class="text-center mt-5">既にアカウントをお持ちですか？</div>
       <div class="text-center">
@@ -42,35 +40,28 @@
 
 <script>
 export default {
-  name: "LoginPage",
+  name: 'LoginPage',
   data: () => ({
     valid: true,
-    email: "",
+    email: '',
     emailRules: [
-      (v) => !!v || "必須項目です",
-      (v) => /.+@.+\..+/.test(v) || "有効なメールアドレスを入力してください",
+      (v) => !!v || '必須項目です',
+      (v) => /.+@.+\..+/.test(v) || '有効なメールアドレスを入力してください',
     ],
     password: null,
     show: false,
     passwordRules: [
-      (v) => !!v || "パスワードを入力してください",
-      (v) => (v && v.length > 8) || "8文字以上で設定してください",
+      (v) => !!v || 'パスワードを入力してください',
+      (v) => (v && v.length > 8) || '8文字以上で設定してください',
     ],
   }),
 
   methods: {
     signup() {
-      this.$store
-        .dispatch("auth/signup", {
-          email: this.email,
-          password: this.password,
-        })
-        .then((res) => {
-          // DBへ追加
-          const uid = this.$store.getters["auth/getUserUid"];
-          const email = this.$store.getters["auth/getEmail"];
-          this.$store.dispatch("addUser2DB", { uid, email });
-        });
+      this.$store.dispatch('auth/signup', {
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };
@@ -82,7 +73,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background-image: url("~assets/img/login.jpg");
+  background-image: url('~assets/img/login.jpg');
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -94,7 +85,7 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    content: "";
+    content: '';
     display: block;
     width: 100%;
     height: 100%;
@@ -104,7 +95,7 @@ export default {
 }
 
 #main-title {
-  font-family: "Rampart One", cursive;
+  font-family: 'Rampart One', cursive;
   font-size: 3rem;
 }
 
@@ -121,7 +112,7 @@ h2:before {
   left: 0;
   width: 100%;
   height: 2px;
-  content: "";
+  content: '';
   background: #000;
 }
 

@@ -28,9 +28,7 @@
           required
         ></v-text-field>
 
-        <v-btn :disabled="!valid" color="success" block @click="login()">
-          ログイン
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" block @click="login()"> ログイン </v-btn>
         <div class="text-center mt-5">
           アカウント作成は<nuxt-link to="/auth/signup">こちら</nuxt-link>
         </div>
@@ -39,13 +37,13 @@
         <!-- SOCIAL Account Sign Up-->
         <div class="text-center my-2">
           <div class="mb-3">
-            <v-btn @click="twitterLogin()" width="200" dark color="#1DA1F2">
+            <v-btn @click="socialLogin('twitter')" width="200" dark color="#1DA1F2">
               <v-icon small dark> mdi-twitter </v-icon>
               <span class="pl-1">Twitterでログイン</span>
             </v-btn>
           </div>
           <div>
-            <v-btn @click="googleLogin()" width="200" dark color="#DD5144">
+            <v-btn @click="socialLogin('google')" width="200" dark color="#DD5144">
               <v-icon small dark> mdi-google </v-icon>
               <span class="pl-1">Googleでログイン</span>
             </v-btn>
@@ -58,19 +56,19 @@
 
 <script>
 export default {
-  name: "LoginPage",
+  name: 'LoginPage',
   data: () => ({
     valid: true,
-    email: "",
+    email: '',
     emailRules: [
-      (v) => !!v || "必須項目です",
-      (v) => /.+@.+\..+/.test(v) || "有効なメールアドレスを入力してください",
+      (v) => !!v || '必須項目です',
+      (v) => /.+@.+\..+/.test(v) || '有効なメールアドレスを入力してください',
     ],
     password: null,
     show: false,
     passwordRules: [
-      (v) => !!v || "パスワードを入力してください",
-      (v) => (v && v.length > 8) || "8文字以上で設定してください",
+      (v) => !!v || 'パスワードを入力してください',
+      (v) => (v && v.length > 8) || '8文字以上で設定してください',
     ],
   }),
 
@@ -85,16 +83,13 @@ export default {
       this.$refs.form.resetValidation();
     },
     login() {
-      this.$store.dispatch("auth/login", {
+      this.$store.dispatch('auth/login', {
         email: this.email,
         password: this.password,
       });
     },
-    googleLogin() {
-      this.$store.dispatch("auth/googleLogin");
-    },
-    twitterLogin() {
-      this.$store.dispatch("auth/twitterLogin");
+    socialLogin(type) {
+      this.$store.dispatch('auth/socialLogin', type);
     },
   },
 };
@@ -106,7 +101,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background-image: url("~assets/img/login.jpg");
+  background-image: url('~assets/img/login.jpg');
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -118,7 +113,7 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    content: "";
+    content: '';
     display: block;
     width: 100%;
     height: 100%;
@@ -128,7 +123,7 @@ export default {
 }
 
 #main-title {
-  font-family: "Rampart One", cursive;
+  font-family: 'Rampart One', cursive;
   font-size: 3rem;
 }
 
@@ -145,7 +140,7 @@ h2:before {
   left: 0;
   width: 100%;
   height: 2px;
-  content: "";
+  content: '';
   background: #000;
 }
 

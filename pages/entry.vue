@@ -110,7 +110,7 @@
       -->
       <v-stepper-content step="2">
         <v-card class="mb-6" flat>
-          <v-chip-group column multiple v-model="hobby">
+          <v-chip-group column multiple v-model="userInfo.hobby">
             <v-chip
               v-for="(tag, i) in hobbies"
               :key="i"
@@ -169,6 +169,7 @@ export default {
         birthDay: { year: null, month: null, day: null },
         hiddenBD: false,
         profile: null,
+        hobby: [],
       },
       valid: true,
       errors: {
@@ -251,7 +252,6 @@ export default {
         { type: 'ドローン', icon: 'mdi-drone' },
         { type: 'ツーリング', icon: 'mdi-motorbike' },
       ],
-      hobby: [],
     };
   },
   methods: {
@@ -259,8 +259,9 @@ export default {
       this.day = '';
     },
     validate(step) {
+      this.valid = true;
+      this.errMsg = null;
       if (step === 'step1') {
-        this.valid = true;
         let isValid = true;
         for (let key in this.errors.step1) {
           if (this.userInfo[key] === null) {
@@ -282,7 +283,7 @@ export default {
           return;
         }
       } else if (step === 'step2') {
-        if (this.hobby.length === 0) {
+        if (this.userInfo.hobby.length === 0) {
           this.errMsg = '趣味をどれか1つ以上選択してください';
           this.valid = false;
           return;
@@ -302,7 +303,9 @@ export default {
     },
     regist() {
       // console.log(this.userInfo);
-      this.$store.dispatch('updateUserInfo', this.userInfo);
+      this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
+        this.$router.push('/');
+      });
     },
   },
   computed: {

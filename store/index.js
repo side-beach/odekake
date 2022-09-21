@@ -8,52 +8,59 @@ import {
   query,
   where,
   getDocs,
+  serverTimestamp
 } from 'firebase/firestore';
 
-export const state = () => ({});
+export const state = () => ({
+  docID:null
+});
 
-export const mutations = {};
+export const mutations = {
+  setDocID: (state, docID) => {
+    state.docID = docID;
+  },
+};
 
 export const actions = {
-  async getUserData({ commit }, payload) {
-    console.log(payload);
-    /*
-    const db = getFirestore();
-    const q = query(collection(db,'users',where('uid','==',payload.uid)))
-    */
-  },
-  async addUser2DB({ commit }, payload) {
-    const db = getFirestore();
-    const docRef = await addDoc(collection(db, 'users'), {
-      uid: payload.uid,
-      email: payload.email,
-      isNew: true
-    });
-    this.$router.push("/entry");
-    // console.log('Document written with ID: ', docRef.id);
-  },
-  // Update user info when user signs up for first time.
-  async updateUserInfo({ getters }, payload) {
+  async getDocID({commit, getters}) {
     // Search User Info by uid
     const uid = getters['auth/getUserUid'];
-    let docID = null;
     const db = getFirestore();
     const q = query(collection(db, 'users'), where('uid', '==', uid));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       console.log(doc.id, '=>', doc.data());
-      docID = doc.id;
+      commit('setDocID',doc.id);
     });
-
+  },
+  // first sign up
+  async addUser2DB({ commit }, payload) {
+    const db = getFirestore();
+    // console.log(payload)
+    const docRef = await addDoc(collection(db, 'users'), {
+      uid: payload.uid,
+      email: payload.email,
+      isNew: true,
+      createdAt: serverTimestamp()
+    });
+    this.$router.push("/entry");
+    // console.log('Document written with ID: ', docRef.id);
+  },
+  // Update user info when user signs up for first time.
+  async updateUserInfo({ getters,dispatch }, payload) {
     // Add user info by uid
     const userInfo = { ...payload };
-    userInfo.uid = uid;
-    userInfo.email = getters['auth/getEmail'];
+    userInfo.isNew = false;
+    let docID;
+    await dispatch('getDocID').then(res=>{
+      docID = getters.docID
+    })
+    const db = getFirestore();
     const userRef = doc(db, 'users', docID);
     await updateDoc(userRef, userInfo);
   },
 };
 
 export const getters = {
-  test: () => 'THIS_IS_GETTTER',
+  docID: (state) => state.docID,
 };

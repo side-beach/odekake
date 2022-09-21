@@ -9,21 +9,21 @@ import {
 } from "firebase/auth";
 
 export const state = () => ({
-  token: null,
+  isLogin: null,
   userUid: null,
   email: null,
   isNew:false
 });
 
 export const getters = {
-  isLogined: (state) => !!state.token,
+  isLogined: (state) => !!state.isLogin,
   getUserUid: (state) => state.userUid,
   getEmail: (state) => state.email,
 };
 
 export const mutations = {
   setLogin: (state, isLogin) => {
-    state.token = !!isLogin;
+    state.isLogin = !!isLogin;
   },
   setUserUid: (state, userUid) => {
     state.userUid = userUid;
@@ -47,34 +47,39 @@ export const actions = {
         alert(e);
       });
   },
-  async googleLogin({ dispatch }) {
+  async socialLogin({ dispatch, rootGetters },payload) {
     const auth = getAuth(this.$firebase);
-    const provider = new GoogleAuthProvider();
-
-    await signInWithPopup(auth, provider).then((user) => {
-      console.log(user)
-      dispatch("addUserInfo", { uid: user.uid, email: user.email });
-      this.$router.push("/");
+    let provider
+    if(payload === 'twitter'){
+      provider = new TwitterAuthProvider();
+    }else if(payload === 'google'){
+      provider = new GoogleAuthProvider();
+    }
+    await signInWithPopup(auth, provider).then((userCredential) => {
+      const [uid, email] = [userCredential.user.uid, userCredential.user.email]
+      // Add User Info to vuex store
+      dispatch("addUserInfo", { uid, email })
+      .then(res=>{
+        // Check new user
+        dispatch('getDocID',null,{root:true}).then(res=>{
+          if(rootGetters.docID == null){
+          dispatch("addUser2DB", { uid, email },{root:true});
+        }
+        })
+      })
+      // this.$router.push("/");
     });
   },
-  async twitterLogin({dispatch}){
-    const auth = getAuth(this.$firebase);
-    const provider = new TwitterAuthProvider();
-
-    await signInWithPopup(auth, provider).then((user) => {
-      dispatch("addUserInfo", { uid: user.uid, email: user.email });
-      this.$router.push("/");
-    })
-    .catch(e=>{
-      console.log(e.message)
-    });
-  },
-  async signup({ dispatch }, payload) {
+  async signup({ dispatch }, payload) {// Email Sign Up
     const auth = getAuth(this.$firebase);
     await createUserWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
-        dispatch("addUserInfo", { uid: userCredential.user.uid, email: userCredential.user.email });
-        // dispatch("login", { email: payload.email, password: payload.password });
+        const [uid, email] = [userCredential.user.uid, userCredential.user.email]
+        // Add user info to vuex store.
+        dispatch("addUserInfo", { uid, email}).then(res=>{
+          // Add user info to firestore.
+          dispatch("addUser2DB", { uid, email },{root:true});
+        });
       })
       .catch((e) => {
         if (e.message === "Firebase: Error (auth/email-already-in-use).") {
@@ -101,6 +106,5 @@ export const actions = {
     commit("setLogin", true);
     commit("setUserUid", payload.uid);
     commit("setEmail", payload.email);
-    console.log(payload)
   },
 };
