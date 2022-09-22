@@ -7,6 +7,7 @@ import {
   updateDoc,
   query,
   where,
+  getDoc,
   getDocs,
   serverTimestamp
 } from 'firebase/firestore';
@@ -59,6 +60,22 @@ export const actions = {
     const userRef = doc(db, 'users', docID);
     await updateDoc(userRef, userInfo);
   },
+  async checkNewUser({commit},payload){
+    const db = getFirestore()
+    const docID = payload;
+    const docRef = doc(db,"users",docID)
+    const docSnap = await getDoc(docRef)
+    if(docSnap.exists()){
+      const data = docSnap.data()
+      if(data.isNew){
+        this.$router.push("/entry");
+      }else{
+        this.$router.replace("/");
+      }
+    }else{
+      console.log("Check New User: No such document!")
+    }
+  }
 };
 
 export const getters = {

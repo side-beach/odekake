@@ -10,6 +10,7 @@
       <v-stepper-step :complete="page > 2" step="2">どこいく？なにする？</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step step="3">プロフィール</v-stepper-step>
+      <v-btn text @click="logout()" class="my-auto">ログアウト</v-btn>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -306,6 +307,9 @@ export default {
       this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
         this.$router.push('/');
       });
+    },
+    logout() {
+      this.$store.dispatch('auth/logout');
     },
   },
   computed: {

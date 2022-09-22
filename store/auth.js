@@ -67,7 +67,7 @@ export const actions = {
         }
         })
       })
-      // this.$router.push("/");
+      this.$router.push("/");
     });
   },
   async signup({ dispatch }, payload) {// Email Sign Up
@@ -96,7 +96,7 @@ export const actions = {
         commit("setLogin", false);
         commit("setUserUid", "");
         commit("setEmail", "");
-        this.$router.push("auth/login");
+        this.$router.replace("auth/login");
       })
       .catch((e) => {
         alert(e);
