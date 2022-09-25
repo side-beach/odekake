@@ -1,5 +1,9 @@
 <template>
-  <h1>CHILD COMPONETN</h1>
+  <v-row>
+    <v-col>
+      <UserCard />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
