@@ -137,6 +137,22 @@
       -->
       <v-stepper-content step="3">
         <v-card flat>
+          <v-row>
+            <v-col cols="4">
+              <v-file-input
+                label="プロフィール画像を選択"
+                accept="image/*"
+                show-size
+                truncate-length="15"
+                outlined
+                ref="file"
+                @change="setImage()"
+                dense
+              ></v-file-input
+            ></v-col>
+            <v-col cols="8"> </v-col>
+          </v-row>
+
           <v-text-field
             class="mt-5"
             outlined
@@ -281,7 +297,7 @@ export default {
         if (!isValid) {
           this.valid = false;
           this.errMsg = '未入力の項目があります';
-          return;
+          // return;
         }
       } else if (step === 'step2') {
         if (this.userInfo.hobby.length === 0) {
@@ -310,6 +326,9 @@ export default {
     },
     logout() {
       this.$store.dispatch('auth/logout');
+    },
+    setImage() {
+      const image = this.$refs.file.files[0];
     },
   },
   computed: {

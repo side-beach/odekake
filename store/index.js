@@ -61,10 +61,14 @@ export const actions = {
     await updateDoc(userRef, userInfo);
   },
   async checkNewUser({commit},payload){
+    
     const db = getFirestore()
     const docID = payload;
+    // console.log(docID)
     const docRef = doc(db,"users",docID)
+    // process is stop here when doc id is null
     const docSnap = await getDoc(docRef)
+    
     if(docSnap.exists()){
       const data = docSnap.data()
       if(data.isNew){
