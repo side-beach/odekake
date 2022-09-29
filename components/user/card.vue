@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title :user-info="{ name: 'aaa' }">aaaa</v-card-title>
+    <v-card-title>aaaa</v-card-title>
   </v-card>
 </template>
 

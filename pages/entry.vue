@@ -136,44 +136,79 @@
         Profile Input
       -->
       <v-stepper-content step="3">
-        <v-card flat>
+        <v-card flat width="350" class="mx-auto">
+          <!--
+            Image Upload
+          -->
           <v-row>
-            <v-col cols="4">
-              <v-file-input
-                label="プロフィール画像を選択"
-                accept="image/*"
-                show-size
-                truncate-length="15"
-                outlined
-                ref="file"
+            <v-col cols="12">
+              <label id="upload-label" for="imgupload"
+                ><v-icon large color="primary">mdi-image</v-icon>
+                趣味画像を追加
+              </label>
+              <input
+                id="imgupload"
                 @change="setImage()"
-                dense
-              ></v-file-input
-            ></v-col>
-            <v-col cols="8"> </v-col>
+                @click="
+                  (e) => {
+                    e.target.value = '';
+                  }
+                "
+                type="file"
+                accept="image/*"
+                ref="img"
+              />
+            </v-col>
+            <v-col cols="6" v-for="(url, idx) in imgURL" :key="idx">
+              <v-img
+                :src="url"
+                max-height="300"
+                contain
+                @click.stop="openRemoveImg(idx)"
+                style="cursor: pointer"
+              ></v-img>
+              <v-dialog v-model="dialog[idx]" width="350">
+                <v-card>
+                  <v-card-title class="text-h5"> この画像を削除しますか？</v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey" text @click="dialog.splice(idx, 1, false)">
+                      キャンセル
+                    </v-btn>
+                    <v-btn color="warning" text @click="removeImg(idx)"> 削除 </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
           </v-row>
 
-          <v-text-field
+          <v-textarea
             class="mt-5"
             outlined
             v-model="userInfo.profile"
-            label="自己紹介"
+            label="自己紹介を入力してください"
             auto-grow
             dense
+            solo
             hint="例: 一緒にキャンプへ行ってくれる人募集！"
           >
-          </v-text-field>
+          </v-textarea>
+
+          <v-row>
+            <v-col><v-btn x-large text @click="page = 2"> 前に戻る </v-btn></v-col>
+            <v-spacer></v-spacer>
+            <v-col>
+              <v-btn x-large color="primary" @click="regist()">登録する</v-btn>
+            </v-col>
+          </v-row>
         </v-card>
-        <div class="text-center">
-          <v-btn x-large text @click="page = 2"> 前に戻る </v-btn>
-          <v-btn x-large color="primary" @click="validate('step3')"> 登録する </v-btn>
-        </div>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
 </template>
 
 <script>
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 export default {
   name: 'EntryPage',
   data() {
@@ -188,6 +223,9 @@ export default {
         profile: null,
         hobby: [],
       },
+      images: [],
+      imgURL: [],
+      dialog: [],
       valid: true,
       errors: {
         step1: {
@@ -297,7 +335,7 @@ export default {
         if (!isValid) {
           this.valid = false;
           this.errMsg = '未入力の項目があります';
-          // return;
+          return;
         }
       } else if (step === 'step2') {
         if (this.userInfo.hobby.length === 0) {
@@ -320,6 +358,7 @@ export default {
     },
     regist() {
       // console.log(this.userInfo);
+      this.uploadImage();
       this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
         this.$router.push('/');
       });
@@ -328,7 +367,31 @@ export default {
       this.$store.dispatch('auth/logout');
     },
     setImage() {
-      const image = this.$refs.file.files[0];
+      for (let i of this.$refs.img.files) {
+        this.images.push(i);
+        this.imgURL.push(URL.createObjectURL(i));
+        this.dialog.push(false);
+      }
+    },
+    openRemoveImg(idx) {
+      this.dialog.splice(idx, 1, true);
+      console.log(this.dialog);
+    },
+    removeImg(idx) {
+      this.images.splice(idx, 1);
+      this.imgURL.splice(idx, 1);
+      this.dialog.splice(idx, 1);
+    },
+    uploadImage() {
+      const uid = this.$store.getters['auth/currentUserUid'];
+      const storage = getStorage();
+      let imageRef;
+      for (let i = 0; i < this.images.length; i++) {
+        imageRef = ref(storage, `${uid}/top${i}`);
+        uploadBytes(imageRef, this.images[i]).then((snapshot) => {
+          console.log('upload image file');
+        });
+      }
     },
   },
   computed: {
@@ -370,3 +433,26 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#upload-label {
+  display: block;
+  box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.5), 0px 2px 4px rgba(0, 0, 0, 0.1),
+    0px 4px 8px rgba(0, 0, 0, 0.1), 0px 8px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  // border: 2px solid #ccc;
+  border-radius: 5px;
+  margin: 10px auto;
+  padding: 10px 5px;
+  cursor: pointer;
+  &:active {
+    box-shadow: none;
+    border: 1px solid #333;
+  }
+}
+
+#imgupload {
+  display: none;
+}
+</style>
