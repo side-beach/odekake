@@ -23,8 +23,15 @@ export const mutations = {
 };
 
 export const actions = {
-  async getData({ commit }, getters) {
-    const uid = getters['auth/currentUserUid'];
-    console.log(uid);
+  
+  async getData({ commit }) {
+    console.log('GET DATA')
+    const db = getFirestore();
+    const usersRef = collection(db,'users')
+    const q = query(usersRef, where('isNew',"==", false));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc)=>{
+      console.log(doc.id, " ==========> ", doc.data());
+    })
   },
 };

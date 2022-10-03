@@ -63,6 +63,7 @@ export const actions = {
         // Check new user
         dispatch('getDocID', null, { root: true })
           .then((res) => {
+            // console.log("path",rootGetters.docID)
             if (rootGetters.docID == null) {
               dispatch('addUser2DB', { uid, email }, { root: true });
             }

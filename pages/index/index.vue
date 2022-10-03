@@ -1,17 +1,15 @@
 <template>
-  <v-row>
-    <v-col>
-      <UserCard :user-info="{}" />
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row>
+      <v-col>
+        <UserCard />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-export default {
-  data() {
-    return {};
-  },
-};
+export default {};
 </script>
 
 <style></style>

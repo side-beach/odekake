@@ -14,11 +14,13 @@ import {
 
 export const state = () => ({
   docID: null,
+  userData:{}
 });
 
 export const mutations = {
-  setDocID: (state, docID) => {
-    state.docID = docID;
+  setDocID: (state, data) => {
+    state.docID = data.docID;
+    state.userData = data.data
   },
 };
 
@@ -31,7 +33,7 @@ export const actions = {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       console.log(doc.id, '=>', doc.data());
-      commit('setDocID', doc.id);
+      commit('setDocID', {docID:doc.id,data:doc.data()});
     });
   },
   // first sign up
@@ -77,6 +79,7 @@ export const actions = {
         this.$router.replace('/');
       }
     } else {
+      this.$router.replace('/entry');
       console.log('Check New User: No such document!');
     }
   },
@@ -84,4 +87,5 @@ export const actions = {
 
 export const getters = {
   docID: (state) => state.docID,
+  userData: (state) => state.userData
 };
