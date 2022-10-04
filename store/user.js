@@ -12,6 +12,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
+
 export const state = () => ({
   data: {},
 });
@@ -25,13 +26,22 @@ export const mutations = {
 export const actions = {
   
   async getData({ commit }) {
-    console.log('GET DATA')
+    // Get user data from firestore
     const db = getFirestore();
     const usersRef = collection(db,'users')
     const q = query(usersRef, where('isNew',"==", false));
     const querySnapshot = await getDocs(q);
+    let dataSets = [], data = {};
     querySnapshot.forEach((doc)=>{
-      console.log(doc.id, " ==========> ", doc.data());
+      // console.log(doc.id, " ==========> ", doc.data());
+      dataSets.push(doc.data());
     })
+
+    commit('setData', dataSets)
   },
+  
 };
+
+export const getters = {
+  getDataSet: (state) => state.data
+}

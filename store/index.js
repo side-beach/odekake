@@ -53,6 +53,7 @@ export const actions = {
   async updateUserInfo({ getters, dispatch }, payload) {
     // Add user info by uid
     const userInfo = { ...payload };
+    
     userInfo.isNew = false;
     let docID;
     await dispatch('getDocID').then((res) => {
@@ -60,6 +61,9 @@ export const actions = {
     });
     const db = getFirestore();
     const userRef = doc(db, 'users', docID);
+
+    // console.log({userInfo})
+
     await updateDoc(userRef, userInfo);
   },
   async checkNewUser({ commit }, payload) {

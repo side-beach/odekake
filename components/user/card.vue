@@ -1,22 +1,37 @@
 <template>
-  <v-card>
-    <v-card-title>{{ userdata }}</v-card-title>
-    <h1>aaaaaaaaaaaa</h1>
+  <v-card class="mx-auto" max-width="200">
+    <v-img class="white--text align-end" :src="userData.profImgUrl[0]">
+      <v-card-title
+        ><span class="mr-3">{{ userData.nickName }}</span> <span>{{ age }}</span></v-card-title
+      >
+    </v-img>
   </v-card>
 </template>
 
 <script>
 export default {
+  props: {
+    userData: Object,
+  },
   data() {
     return {};
   },
-  created() {
-    // fetch doc ID and User data on Firebase
-    this.$store.dispatch('user/getData');
-  },
   computed: {
-    userdata: function () {
-      return this.$store.getters['userData'];
+    age() {
+      const today = new Date();
+      //今年の誕生日
+      var thisYearsBirthday = new Date(
+        today.getFullYear(),
+        this.userData.birthDay.month - 1,
+        this.userData.birthDay.day
+      );
+      //年齢
+      var age = today.getFullYear() - this.userData.birthDay.year;
+      if (today < thisYearsBirthday) {
+        //今年まだ誕生日が来ていない
+        age--;
+      }
+      return age;
     },
   },
 };
