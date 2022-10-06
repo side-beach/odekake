@@ -14,14 +14,18 @@ import {
 
 export const state = () => ({
   docID: null,
-  userData:{}
+  userData:{},
+  lastLgoin:null
 });
 
 export const mutations = {
   setDocID: (state, data) => {
     state.docID = data.docID;
-    state.userData = data.data
+    state.userData = data.data;
   },
+  setLastLoginTime:(state, data)=>{
+    state.lastLgoin = data;
+  }
 };
 
 export const actions = {
@@ -32,7 +36,7 @@ export const actions = {
     const q = query(collection(db, 'users'), where('uid', '==', uid));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.id, '=>', doc.data());
+      // console.log(doc.id, '=>', doc.data());
       commit('setDocID', {docID:doc.id,data:doc.data()});
     });
   },
@@ -61,15 +65,12 @@ export const actions = {
     });
     const db = getFirestore();
     const userRef = doc(db, 'users', docID);
-
-    // console.log({userInfo})
-
     await updateDoc(userRef, userInfo);
   },
   async checkNewUser({ commit }, payload) {
     const db = getFirestore();
     const docID = payload ?? 'null';
-    console.log(payload);
+    // console.log(payload);
     const docRef = doc(db, 'users', docID);
 
     const docSnap = await getDoc(docRef);
@@ -87,6 +88,21 @@ export const actions = {
       console.log('Check New User: No such document!');
     }
   },
+  async addLastLoginTimeStamp ({commit, dispatch, getters}){
+    let docID; 
+    await dispatch('getDocID').then(()=>{
+      docID = getters["docID"];
+    })
+    const db = getFirestore();
+    const docRef = doc(db,"users",docID)
+
+    await updateDoc(docRef,{
+      lastLgoin: serverTimestamp()
+    })
+
+    var date = new Date();
+    commit("setLastLoginTime", date.toLocaleString())
+  }
 };
 
 export const getters = {

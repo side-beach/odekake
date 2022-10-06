@@ -311,6 +311,9 @@ export default {
     };
   },
   methods: {
+    test() {
+      console.log(this.$store.getters['auth/getUserUid']);
+    },
     resetDay() {
       this.day = '';
     },
@@ -361,7 +364,7 @@ export default {
       // Upload the image to Cloud Firestore
       // To process synchronously
       const promise = new Promise((resolve, reject) => {
-        const uid = this.$store.getters['auth/currentUserUid'];
+        const uid = this.$store.getters['auth/getUserUid'];
         const storage = getStorage();
         let imageRef;
         for (let i = 0; i < this.images.length; i++) {

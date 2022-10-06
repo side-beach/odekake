@@ -19,7 +19,6 @@ export const getters = {
   isLogined: (state) => !!state.isLogin,
   getUserUid: (state) => state.userUid,
   getEmail: (state) => state.email,
-  currentUserUid: () => getAuth().currentUser.uid,
 };
 
 export const mutations = {
