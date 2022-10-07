@@ -136,28 +136,79 @@
         Profile Input
       -->
       <v-stepper-content step="3">
-        <v-card flat>
-          <v-text-field
+        <v-card flat width="350" class="mx-auto">
+          <!--
+            Image Upload
+          -->
+          <v-row>
+            <v-col cols="12">
+              <label id="upload-label" for="imgupload"
+                ><v-icon large color="primary">mdi-image</v-icon>
+                趣味画像を追加
+              </label>
+              <input
+                id="imgupload"
+                @change="setImage()"
+                @click="
+                  (e) => {
+                    e.target.value = '';
+                  }
+                "
+                type="file"
+                accept="image/*"
+                ref="img"
+              />
+            </v-col>
+            <v-col cols="6" v-for="(url, idx) in imgURL" :key="idx">
+              <v-img
+                :src="url"
+                max-height="300"
+                contain
+                @click.stop="openRemoveImg(idx)"
+                style="cursor: pointer"
+              ></v-img>
+              <v-dialog v-model="dialog[idx]" width="350">
+                <v-card>
+                  <v-card-title class="text-h5"> この画像を削除しますか？</v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey" text @click="dialog.splice(idx, 1, false)">
+                      キャンセル
+                    </v-btn>
+                    <v-btn color="warning" text @click="removeImg(idx)"> 削除 </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+          </v-row>
+
+          <v-textarea
             class="mt-5"
             outlined
             v-model="userInfo.profile"
-            label="自己紹介"
+            label="自己紹介を入力してください"
             auto-grow
             dense
+            solo
             hint="例: 一緒にキャンプへ行ってくれる人募集！"
           >
-          </v-text-field>
+          </v-textarea>
+
+          <v-row>
+            <v-col><v-btn x-large text @click="page = 2"> 前に戻る </v-btn></v-col>
+            <v-spacer></v-spacer>
+            <v-col>
+              <v-btn x-large color="primary" @click="regist()">登録する</v-btn>
+            </v-col>
+          </v-row>
         </v-card>
-        <div class="text-center">
-          <v-btn x-large text @click="page = 2"> 前に戻る </v-btn>
-          <v-btn x-large color="primary" @click="validate('step3')"> 登録する </v-btn>
-        </div>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
 </template>
 
 <script>
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 export default {
   name: 'EntryPage',
   data() {
@@ -170,8 +221,12 @@ export default {
         birthDay: { year: null, month: null, day: null },
         hiddenBD: false,
         profile: null,
+        profImgUrl: [],
         hobby: [],
       },
+      images: [],
+      imgURL: [],
+      dialog: [],
       valid: true,
       errors: {
         step1: {
@@ -256,6 +311,9 @@ export default {
     };
   },
   methods: {
+    test() {
+      console.log(this.$store.getters['auth/getUserUid']);
+    },
     resetDay() {
       this.day = '';
     },
@@ -302,14 +360,53 @@ export default {
 
       this.page += 1;
     },
-    regist() {
-      // console.log(this.userInfo);
-      this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
-        this.$router.push('/');
+    async regist() {
+      // Upload the image to Cloud Firestore
+      // To process synchronously
+      const promise = new Promise((resolve, reject) => {
+        const uid = this.$store.getters['auth/getUserUid'];
+        const storage = getStorage();
+        let imageRef;
+        for (let i = 0; i < this.images.length; i++) {
+          imageRef = ref(storage, `users/${uid}/top${i}`);
+          uploadBytes(imageRef, this.images[i]).then((snapshot) => {
+            console.log('upload image file');
+            // add IMG URL to user info
+            getDownloadURL(snapshot.ref).then((downloadURL) => {
+              // console.log(downloadURL);
+              this.userInfo.profImgUrl.push(downloadURL);
+              if (this.userInfo.profImgUrl.length == this.images.length) {
+                resolve();
+              }
+            });
+          });
+        }
+      });
+      // Once the previous process is complete
+      promise.then((res) => {
+        this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
+          this.$router.push('/');
+        });
       });
     },
     logout() {
       this.$store.dispatch('auth/logout');
+    },
+    setImage() {
+      for (let i of this.$refs.img.files) {
+        this.images.push(i);
+        this.imgURL.push(URL.createObjectURL(i));
+        this.dialog.push(false);
+      }
+    },
+    openRemoveImg(idx) {
+      this.dialog.splice(idx, 1, true);
+      console.log(this.dialog);
+    },
+    removeImg(idx) {
+      this.images.splice(idx, 1);
+      this.imgURL.splice(idx, 1);
+      this.dialog.splice(idx, 1);
     },
   },
   computed: {
@@ -351,3 +448,26 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#upload-label {
+  display: block;
+  box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.5), 0px 2px 4px rgba(0, 0, 0, 0.1),
+    0px 4px 8px rgba(0, 0, 0, 0.1), 0px 8px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  // border: 2px solid #ccc;
+  border-radius: 5px;
+  margin: 10px auto;
+  padding: 10px 5px;
+  cursor: pointer;
+  &:active {
+    box-shadow: none;
+    border: 1px solid #333;
+  }
+}
+
+#imgupload {
+  display: none;
+}
+</style>

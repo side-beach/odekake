@@ -6,13 +6,13 @@ import {
   GoogleAuthProvider,
   TwitterAuthProvider,
   signInWithPopup,
-} from "firebase/auth";
+} from 'firebase/auth';
 
 export const state = () => ({
   isLogin: null,
   userUid: null,
   email: null,
-  isNew:false
+  isNew: false,
 });
 
 export const getters = {
@@ -38,54 +38,58 @@ export const actions = {
     const auth = getAuth(this.$firebase);
     await signInWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
-        commit("setLogin", true);
-        commit("setUserUid", userCredential.user.uid);
-        commit("setEmail", userCredential.user.email);
-        this.$router.push("/");
+        commit('setLogin', true);
+        commit('setUserUid', userCredential.user.uid);
+        commit('setEmail', userCredential.user.email);
+        this.$router.push('/');
       })
       .catch((e) => {
         alert(e);
       });
   },
-  async socialLogin({ dispatch, rootGetters },payload) {
+  async socialLogin({ dispatch, rootGetters }, payload) {
     const auth = getAuth(this.$firebase);
-    let provider
-    if(payload === 'twitter'){
+    let provider;
+    if (payload === 'twitter') {
       provider = new TwitterAuthProvider();
-    }else if(payload === 'google'){
+    } else if (payload === 'google') {
       provider = new GoogleAuthProvider();
     }
     await signInWithPopup(auth, provider).then((userCredential) => {
-      const [uid, email] = [userCredential.user.uid, userCredential.user.email]
+      const [uid, email] = [userCredential.user.uid, userCredential.user.email];
       // Add User Info to vuex store
-      dispatch("addUserInfo", { uid, email })
-      .then(res=>{
+      dispatch('addUserInfo', { uid, email }).then((res) => {
         // Check new user
-        dispatch('getDocID',null,{root:true}).then(res=>{
-          if(rootGetters.docID == null){
-          dispatch("addUser2DB", { uid, email },{root:true});
-        }
-        })
-      })
-      this.$router.push("/");
+        dispatch('getDocID', null, { root: true })
+          .then((res) => {
+            // console.log("path",rootGetters.docID)
+            if (rootGetters.docID == null) {
+              dispatch('addUser2DB', { uid, email }, { root: true });
+            }
+          })
+          .then((res) => {
+            this.$router.push('/');
+          });
+      });
     });
   },
-  async signup({ dispatch }, payload) {// Email Sign Up
+  async signup({ dispatch }, payload) {
+    // Email Sign Up
     const auth = getAuth(this.$firebase);
     await createUserWithEmailAndPassword(auth, payload.email, payload.password)
       .then((userCredential) => {
-        const [uid, email] = [userCredential.user.uid, userCredential.user.email]
+        const [uid, email] = [userCredential.user.uid, userCredential.user.email];
         // Add user info to vuex store.
-        dispatch("addUserInfo", { uid, email}).then(res=>{
+        dispatch('addUserInfo', { uid, email }).then((res) => {
           // Add user info to firestore.
-          dispatch("addUser2DB", { uid, email },{root:true});
+          dispatch('addUser2DB', { uid, email }, { root: true });
         });
       })
       .catch((e) => {
-        if (e.message === "Firebase: Error (auth/email-already-in-use).") {
-          alert("このメールアドレスはすでに使用されています");
-        }else{
-          alert(e)
+        if (e.message === 'Firebase: Error (auth/email-already-in-use).') {
+          alert('このメールアドレスはすでに使用されています');
+        } else {
+          alert(e);
         }
       });
   },
@@ -93,18 +97,18 @@ export const actions = {
     const auth = getAuth(this.$firebase);
     await signOut(auth)
       .then(() => {
-        commit("setLogin", false);
-        commit("setUserUid", "");
-        commit("setEmail", "");
-        this.$router.replace("auth/login");
+        commit('setLogin', false);
+        commit('setUserUid', '');
+        commit('setEmail', '');
+        this.$router.replace('auth/login');
       })
       .catch((e) => {
         alert(e);
       });
   },
   addUserInfo({ commit }, payload) {
-    commit("setLogin", true);
-    commit("setUserUid", payload.uid);
-    commit("setEmail", payload.email);
+    commit('setLogin', true);
+    commit('setUserUid', payload.uid);
+    commit('setEmail', payload.email);
   },
 };
