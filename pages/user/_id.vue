@@ -60,6 +60,15 @@ export default {
   created() {
     const id = this.$route.params.id;
     this.$store.dispatch('user/getPersonalData', id);
+    // Check see if I have already LIKED.
+    this.$store.dispatch('user/checkLikedUser', id).then(() => {
+      const isLiked = this.$store.getters['user/isLiked'];
+      if (isLiked) {
+        this.btnColor = 'gray';
+        this.btnDisable = true;
+        this.btnMsg = 'いいね済';
+      }
+    });
   },
   computed: {
     userData: function () {
@@ -87,9 +96,9 @@ export default {
       this.btnMsg = 'いいね済';
       this.btnColor = 'grey';
       this.btnDisable = true;
-      // 自分のいいねしたリストに追加
+      const id = this.$route.params.id;
 
-      // 相手のいいねされたリストに追加
+      this.$store.dispatch('user/addLike', id);
     },
   },
 };

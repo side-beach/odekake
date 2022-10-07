@@ -48,6 +48,9 @@ export const actions = {
       uid: payload.uid,
       email: payload.email,
       isNew: true,
+      liked:[],
+      beLiked:[],
+      matched:[],
       createdAt: serverTimestamp(),
     });
     this.$router.push('/entry');
