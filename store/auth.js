@@ -19,7 +19,6 @@ export const getters = {
   isLogined: (state) => !!state.isLogin,
   getUserUid: (state) => state.userUid,
   getEmail: (state) => state.email,
-  currentUserUid: () => getAuth().currentUser.uid,
 };
 
 export const mutations = {
@@ -63,6 +62,7 @@ export const actions = {
         // Check new user
         dispatch('getDocID', null, { root: true })
           .then((res) => {
+            // console.log("path",rootGetters.docID)
             if (rootGetters.docID == null) {
               dispatch('addUser2DB', { uid, email }, { root: true });
             }

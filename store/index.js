@@ -14,12 +14,18 @@ import {
 
 export const state = () => ({
   docID: null,
+  userData:{},
+  lastLgoin:null
 });
 
 export const mutations = {
-  setDocID: (state, docID) => {
-    state.docID = docID;
+  setDocID: (state, data) => {
+    state.docID = data.docID;
+    state.userData = data.data;
   },
+  setLastLoginTime:(state, data)=>{
+    state.lastLgoin = data;
+  }
 };
 
 export const actions = {
@@ -30,8 +36,8 @@ export const actions = {
     const q = query(collection(db, 'users'), where('uid', '==', uid));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.id, '=>', doc.data());
-      commit('setDocID', doc.id);
+      // console.log(doc.id, '=>', doc.data());
+      commit('setDocID', {docID:doc.id,data:doc.data()});
     });
   },
   // first sign up
@@ -42,6 +48,9 @@ export const actions = {
       uid: payload.uid,
       email: payload.email,
       isNew: true,
+      liked:[],
+      beLiked:[],
+      matched:[],
       createdAt: serverTimestamp(),
     });
     this.$router.push('/entry');
@@ -51,6 +60,7 @@ export const actions = {
   async updateUserInfo({ getters, dispatch }, payload) {
     // Add user info by uid
     const userInfo = { ...payload };
+    
     userInfo.isNew = false;
     let docID;
     await dispatch('getDocID').then((res) => {
@@ -63,7 +73,7 @@ export const actions = {
   async checkNewUser({ commit }, payload) {
     const db = getFirestore();
     const docID = payload ?? 'null';
-    console.log(payload);
+    // console.log(payload);
     const docRef = doc(db, 'users', docID);
 
     const docSnap = await getDoc(docRef);
@@ -77,11 +87,28 @@ export const actions = {
         this.$router.replace('/');
       }
     } else {
+      this.$router.replace('/entry');
       console.log('Check New User: No such document!');
     }
   },
+  async addLastLoginTimeStamp ({commit, dispatch, getters}){
+    let docID; 
+    await dispatch('getDocID').then(()=>{
+      docID = getters["docID"];
+    })
+    const db = getFirestore();
+    const docRef = doc(db,"users",docID)
+
+    await updateDoc(docRef,{
+      lastLgoin: serverTimestamp()
+    })
+
+    var date = new Date();
+    commit("setLastLoginTime", date.toLocaleString())
+  }
 };
 
 export const getters = {
   docID: (state) => state.docID,
+  userData: (state) => state.userData
 };

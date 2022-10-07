@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 export default {
   name: 'EntryPage',
   data() {
@@ -221,6 +221,7 @@ export default {
         birthDay: { year: null, month: null, day: null },
         hiddenBD: false,
         profile: null,
+        profImgUrl: [],
         hobby: [],
       },
       images: [],
@@ -310,6 +311,9 @@ export default {
     };
   },
   methods: {
+    test() {
+      console.log(this.$store.getters['auth/getUserUid']);
+    },
     resetDay() {
       this.day = '';
     },
@@ -356,11 +360,33 @@ export default {
 
       this.page += 1;
     },
-    regist() {
-      // console.log(this.userInfo);
-      this.uploadImage();
-      this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
-        this.$router.push('/');
+    async regist() {
+      // Upload the image to Cloud Firestore
+      // To process synchronously
+      const promise = new Promise((resolve, reject) => {
+        const uid = this.$store.getters['auth/getUserUid'];
+        const storage = getStorage();
+        let imageRef;
+        for (let i = 0; i < this.images.length; i++) {
+          imageRef = ref(storage, `users/${uid}/top${i}`);
+          uploadBytes(imageRef, this.images[i]).then((snapshot) => {
+            console.log('upload image file');
+            // add IMG URL to user info
+            getDownloadURL(snapshot.ref).then((downloadURL) => {
+              // console.log(downloadURL);
+              this.userInfo.profImgUrl.push(downloadURL);
+              if (this.userInfo.profImgUrl.length == this.images.length) {
+                resolve();
+              }
+            });
+          });
+        }
+      });
+      // Once the previous process is complete
+      promise.then((res) => {
+        this.$store.dispatch('updateUserInfo', this.userInfo).then((res) => {
+          this.$router.push('/');
+        });
       });
     },
     logout() {
@@ -381,17 +407,6 @@ export default {
       this.images.splice(idx, 1);
       this.imgURL.splice(idx, 1);
       this.dialog.splice(idx, 1);
-    },
-    uploadImage() {
-      const uid = this.$store.getters['auth/currentUserUid'];
-      const storage = getStorage();
-      let imageRef;
-      for (let i = 0; i < this.images.length; i++) {
-        imageRef = ref(storage, `${uid}/top${i}`);
-        uploadBytes(imageRef, this.images[i]).then((snapshot) => {
-          console.log('upload image file');
-        });
-      }
     },
   },
   computed: {

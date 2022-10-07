@@ -36,7 +36,14 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/google-fonts'
   ],
+  googleFonts: {
+    families: {
+      Roboto: [100, 400, 500, 700],
+      'Zen+Kaku+Gothic+New':[400,700]
+    }
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
