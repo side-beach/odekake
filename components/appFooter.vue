@@ -3,10 +3,17 @@
     <v-row>
       <v-col>
         <div class="text-center">
-          <v-icon>mdi-home-outline</v-icon>
-          <div>ホーム</div>
+          <v-icon>mdi-account-search-outline</v-icon>
+          <div>さがす</div>
         </div>
       </v-col>
+      <v-col>
+        <div class="text-center">
+          <v-icon>mdi-thumb-up-outline </v-icon>
+          <div>いいね</div>
+        </div>
+      </v-col>
+
       <v-col>
         <div class="text-center">
           <v-icon>mdi-chat-processing-outline </v-icon>
