@@ -45,10 +45,13 @@
         <v-icon right> mdi-thumb-up </v-icon>
       </v-btn>
     </div>
+    <!-- DIALOG WHEN MATCHED WITH SOMEONE -->
+    <MatchedDialog />
   </v-card>
 </template>
 
 <script>
+import MatchedDialog from '~/components/user/matchedDialog.vue';
 export default {
   data() {
     return {
@@ -97,10 +100,10 @@ export default {
       this.btnColor = 'grey';
       this.btnDisable = true;
       const id = this.$route.params.id;
-
       this.$store.dispatch('user/addLike', id);
     },
   },
+  components: { MatchedDialog },
 };
 </script>
 

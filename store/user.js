@@ -18,7 +18,8 @@ export const state = () => ({
   data: null,
   personalData: null,
   docID: null,
-  isLiked: false
+  isLiked: false,
+  isMatched: false
 });
 
 export const mutations = {
@@ -33,6 +34,9 @@ export const mutations = {
   },
   setIsLiked: (state, data) => {
     state.isLiked = data;
+  },
+  setIsMatched: (state, data) => {
+    state.isMatched = data;
   }
 };
 
@@ -68,7 +72,7 @@ export const actions = {
 
     commit('setPersonalData', data)
   },
-  async addLike({rootGetters, getters, dispatch}, payload){
+  async addLike({commit, rootGetters, getters, dispatch}, payload){
     const partnerUid = payload;
     const myUid = rootGetters["auth/getUserUid"];
     let partnerDocID, myDocID;
@@ -96,6 +100,7 @@ export const actions = {
       return;
     })// Match Check
     .then( async () => {
+      commit("setIsMatched",false);
       const usersRef = collection(db, "users");
       const q = query(usersRef, where("liked", "array-contains", myUid));
       const querySnapshot = await getDocs(q);
@@ -104,6 +109,7 @@ export const actions = {
         // console.log(docItem.id, " => ", docItem.data())
         if(docItem.data().uid === partnerUid){
           console.log("MATCHED!!!!!");
+          commit("setIsMatched", true);
           // for Partner Array
           userRef = doc(db, 'users', partnerDocID);
           await updateDoc(userRef, {matched: arrayUnion(myUid)});
@@ -158,4 +164,5 @@ export const getters = {
   personalData: (state) => state.personalData,
   docID: (state) => state.docID,
   isLiked: (state) => state.isLiked,
+  isMatched: (state) => state.isMatched,
 }

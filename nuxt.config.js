@@ -18,11 +18,14 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+    {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Carter+One&display=swap'}
+  ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@/assets/style.css'],
+  css: ['@/assets/style.css','animate.css/animate.min.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: ['@/plugins/firebase.js'],
@@ -36,12 +39,14 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/google-fonts'
+    // '@nuxtjs/google-fonts',
+    ['@nuxtjs/google-fonts', { families: { Inter: true }, display: 'block', download: true, inject: true }]
   ],
   googleFonts: {
     families: {
       Roboto: [100, 400, 500, 700],
-      'Zen+Kaku+Gothic+New':[400,700]
+      'Zen+Kaku+Gothic+New':[400,700],
+      'Carter+One': [400]
     }
   },
 
@@ -69,6 +74,7 @@ export default {
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
     theme: {
       dark: false,
       themes: {
@@ -82,6 +88,9 @@ export default {
           success: colors.green.accent3,
         },
       },
+      defaultAssets: {
+            font: false,
+        }
     },
   },
 

@@ -100,7 +100,7 @@ export const actions = {
         commit('setLogin', false);
         commit('setUserUid', '');
         commit('setEmail', '');
-        this.$router.replace('auth/login');
+        this.$router.replace('/auth/login');
       })
       .catch((e) => {
         alert(e);
