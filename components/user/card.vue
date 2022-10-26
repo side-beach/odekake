@@ -9,18 +9,22 @@
     @click="go2UsersPage"
   >
     <v-img class="white--text align-end" :src="userData.profImgUrl[0]">
-      <v-card-title
-        ><span class="mr-3">{{ userData.nickName }}</span> <span>{{ age }}</span></v-card-title
-      >
+      <v-card-title>
+        <span class="mr-3 font-weight-black">
+          {{ userData.nickName }}
+        </span>
+        <span>{{ age }}</span>
+      </v-card-title>
     </v-img>
     <v-card-text class="text--primary">
       <v-chip-group column>
         <v-chip
           v-for="hobby in userData.hobby"
           :key="hobby"
-          color="green"
-          text-color="white"
+          color="secondary"
+          outlined
           :ripple="false"
+          class="font-weight-bold"
         >
           {{ hobby }}
         </v-chip>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar dense dark>
+    <v-app-bar dense dark color="primary">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title>ようこそ</v-toolbar-title>
     </v-app-bar>

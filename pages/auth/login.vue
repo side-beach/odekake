@@ -1,7 +1,7 @@
 <template>
   <div class="bg pt-16 px-10">
     <v-card width="350" class="mx-auto pa-7">
-      <h1 id="main-title" class="text-center">ODEKAKE</h1>
+      <h1 id="main-title" class="text-center accent--text">ODEKAKE</h1>
       <p class="text-center">ログイン</p>
 
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -123,7 +123,7 @@ export default {
 }
 
 #main-title {
-  font-family: 'Rampart One', cursive;
+  font-family: 'Lobster', cursive;
   font-size: 3rem;
 }
 

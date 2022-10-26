@@ -51,6 +51,7 @@ export const actions = {
       liked:[],
       beLiked:[],
       matched:[],
+      chatRoom:[],
       createdAt: serverTimestamp(),
     });
     this.$router.push('/entry');
