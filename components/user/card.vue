@@ -2,7 +2,7 @@
   <v-card
     id="user-card"
     class="mx-auto"
-    max-width="300"
+    max-width="250"
     v-bind="attrs"
     @mouseover="attrs.elevation = 1"
     @mouseleave="attrs.elevation = 5"
@@ -10,10 +10,10 @@
   >
     <v-img class="white--text align-end" :src="userData.profImgUrl[0]">
       <v-card-title>
-        <span class="mr-3 font-weight-black">
+        <span class="nickname">
           {{ userData.nickName }}
         </span>
-        <span>{{ age }}</span>
+        <span class="age">{{ age }}</span>
       </v-card-title>
     </v-img>
     <v-card-text class="text--primary">
@@ -74,5 +74,23 @@ export default {
 <style lang="scss">
 #user-card {
   cursor: pointer;
+}
+
+.t-shadow {
+  font-weight: bold;
+  text-shadow: black 2px 0px 2px, black -2px 0px 2px, black 0px -2px 2px, black -2px 0px 2px,
+    black 2px 2px 2px, black -2px 2px 2px, black 2px -2px 2px, black -2px -2px 2px,
+    black 1px 2px 2px, black -1px 2px 2px, black 1px -2px 2px, black -1px -2px 2px,
+    black 2px 1px 2px, black -2px 1px 2px, black 2px -1px 2px, black -2px -1px 2px,
+    black 1px 1px 2px, black -1px 1px 2px, black 1px -1px 2px, black -1px -1px 2px;
+}
+
+.nickname {
+  @extend .t-shadow;
+  margin-right: 10px;
+}
+
+.age {
+  @extend .t-shadow;
 }
 </style>

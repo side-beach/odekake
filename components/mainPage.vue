@@ -1,9 +1,11 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col v-for="(item, idx) in userdata" :key="idx">
-        <UserCard :user-data="item" />
-      </v-col>
+    <v-row justify="start" style="height: 600px">
+      <slot>
+        <v-col xs="6" v-for="(item, idx) in userdata" :key="idx">
+          <UserCard :user-data="item" />
+        </v-col>
+      </slot>
     </v-row>
   </v-container>
 </template>

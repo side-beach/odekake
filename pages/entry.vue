@@ -311,9 +311,6 @@ export default {
     };
   },
   methods: {
-    test() {
-      console.log(this.$store.getters['auth/getUserUid']);
-    },
     resetDay() {
       this.day = '';
     },
@@ -366,20 +363,39 @@ export default {
       const promise = new Promise((resolve, reject) => {
         const uid = this.$store.getters['auth/getUserUid'];
         const storage = getStorage();
-        let imageRef;
-        for (let i = 0; i < this.images.length; i++) {
-          imageRef = ref(storage, `users/${uid}/top${i}`);
-          uploadBytes(imageRef, this.images[i]).then((snapshot) => {
-            console.log('upload image file');
-            // add IMG URL to user info
-            getDownloadURL(snapshot.ref).then((downloadURL) => {
-              // console.log(downloadURL);
-              this.userInfo.profImgUrl.push(downloadURL);
-              if (this.userInfo.profImgUrl.length == this.images.length) {
-                resolve();
-              }
+        // Profile画像を設定していた場合としてない場合
+        // 設定していない場合は用意したデフォの画像を設定
+        if (this.images.length === 0) {
+          // 性別によってデフォ画像を切替
+          let defoImgUrl;
+          if (this.userInfo.gender === 'male') {
+            defoImgUrl =
+              'https://firebasestorage.googleapis.com/v0/b/odekake-54c4a.appspot.com/o/users%2Fdefault%2Fmen.png?alt=media&token=f2f84ea3-5ed1-475f-89a6-81b7b7d9c09c';
+          } else if (this.userInfo.gender === 'female') {
+            defoImgUrl =
+              'https://firebasestorage.googleapis.com/v0/b/odekake-54c4a.appspot.com/o/users%2Fdefault%2Fwomen.png?alt=media&token=76e1bc19-1c48-4874-97fa-dab0a8da4ba8';
+          } else if (this.userInfo.gender === 'other') {
+            defoImgUrl =
+              'https://firebasestorage.googleapis.com/v0/b/odekake-54c4a.appspot.com/o/users%2Fdefault%2Ftora.png?alt=media&token=156c4632-66f7-4085-a83b-fb37a7ba14b4';
+          }
+          this.userInfo.profImgUrl.push(defoImgUrl);
+          resolve();
+        } else {
+          let imageRef;
+          for (let i = 0; i < this.images.length; i++) {
+            imageRef = ref(storage, `users/${uid}/top${i}`);
+            uploadBytes(imageRef, this.images[i]).then((snapshot) => {
+              // console.log('upload image file');
+              // add IMG URL to user info
+              getDownloadURL(snapshot.ref).then((downloadURL) => {
+                // console.log(downloadURL);
+                this.userInfo.profImgUrl.push(downloadURL);
+                if (this.userInfo.profImgUrl.length == this.images.length) {
+                  resolve();
+                }
+              });
             });
-          });
+          }
         }
       });
       // Once the previous process is complete

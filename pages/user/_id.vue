@@ -19,13 +19,9 @@
         <div id="detail">
           <span>{{ age }}歳</span>
           <span>{{ userData.pref }}</span>
-          <span v-if="userData.gendar === 'male'">男性</span>
-          <span v-else-if="userData.gendar === 'female'">女性</span>
-          <span v-else>🌈</span>
-        </div>
-        <!-- HOBBY TAG -->
-        <div id="hobby">
-          <div>趣味</div>
+          <span v-if="userData.gender == 'male'">男性</span>
+          <span v-else-if="userData.gender == 'female'">女性</span>
+          <span v-else>🐯</span>
           <v-chip-group column>
             <v-chip color="secondary" v-for="i in userData.hobby" :key="i" outlined>{{ i }}</v-chip>
           </v-chip-group>

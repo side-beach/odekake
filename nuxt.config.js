@@ -26,7 +26,7 @@ export default {
   css: ['@/assets/style.scss','animate.css/animate.min.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/firebase.js'],
+  plugins: ['@/plugins/firebase.js','@/plugins/dayjs.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

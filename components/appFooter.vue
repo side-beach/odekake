@@ -25,7 +25,7 @@ export default {
           title: 'さがす',
         },
         likes: {
-          path: '/like',
+          path: '/beLiked',
           icon: 'mdi-thumb-up-outline',
           title: 'いいね',
         },
