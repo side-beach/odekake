@@ -2,8 +2,7 @@ import {
   getFirestore,
   collection,
   doc,
-  addDoc, // ランダムなDocIDを作成して追加
-  setDoc, // DocIDを指定して追加
+  addDoc,
   updateDoc,
   query,
   where,
@@ -51,6 +50,7 @@ export const actions = {
       liked:[],
       beLiked:[],
       matched:[],
+      chatRoom:[],
       createdAt: serverTimestamp(),
     });
     this.$router.push('/entry');
@@ -110,5 +110,5 @@ export const actions = {
 
 export const getters = {
   docID: (state) => state.docID,
-  userData: (state) => state.userData
+  userData: (state) => state.userData,
 };

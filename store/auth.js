@@ -11,14 +11,14 @@ import {
 export const state = () => ({
   isLogin: null,
   userUid: null,
-  email: null,
+  userData: null,
   isNew: false,
 });
 
 export const getters = {
   isLogined: (state) => !!state.isLogin,
   getUserUid: (state) => state.userUid,
-  getEmail: (state) => state.email,
+  getUserData: (state) => state.userData,
 };
 
 export const mutations = {
@@ -28,8 +28,8 @@ export const mutations = {
   setUserUid: (state, userUid) => {
     state.userUid = userUid;
   },
-  setEmail: (state, email) => {
-    state.email = email;
+  setUserData: (state, userData) => {
+    state.userData = userData;
   },
 };
 
@@ -40,7 +40,7 @@ export const actions = {
       .then((userCredential) => {
         commit('setLogin', true);
         commit('setUserUid', userCredential.user.uid);
-        commit('setEmail', userCredential.user.email);
+        // commit('setEmail', userCredential.user.email);
         this.$router.push('/');
       })
       .catch((e) => {
@@ -99,7 +99,7 @@ export const actions = {
       .then(() => {
         commit('setLogin', false);
         commit('setUserUid', '');
-        commit('setEmail', '');
+        // commit('setEmail', '');
         this.$router.replace('/auth/login');
       })
       .catch((e) => {
@@ -109,6 +109,6 @@ export const actions = {
   addUserInfo({ commit }, payload) {
     commit('setLogin', true);
     commit('setUserUid', payload.uid);
-    commit('setEmail', payload.email);
+    // commit('setUserData', payload);
   },
 };

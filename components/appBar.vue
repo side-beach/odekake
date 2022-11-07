@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-app-bar dense dark>
+    <v-app-bar dense dark color="primary" style="z-index: 99999">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>ようこそ</v-toolbar-title>
+      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" absolute temporary>
@@ -33,7 +33,32 @@ export default {
     return {
       drawer: false,
       group: 0,
+      pageTitle: 'Home',
     };
+  },
+  computed: {},
+  watch: {
+    $route: function (to, from) {
+      console.log(to.name);
+
+      switch (to.name) {
+        case 'index':
+          this.pageTitle = 'ホーム';
+          break;
+        case 'beLiked':
+          this.pageTitle = 'いいね一覧';
+          break;
+        case 'talk':
+          this.pageTitle = 'トーク一覧';
+          break;
+        case 'odekake':
+          this.pageTitle = 'ODEKAKE';
+          break;
+        case 'mypage':
+          this.pageTitle = 'マイページ';
+          break;
+      }
+    },
   },
   methods: {
     logout() {
