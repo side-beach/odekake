@@ -16,10 +16,6 @@
         <v-list-item-content>
           <v-list-item-title>{{ user.nickName }}</v-list-item-title>
         </v-list-item-content>
-
-        <v-list-item-icon>
-          <v-icon color="deep-purple accent-4"> mdi-message-outline </v-icon>
-        </v-list-item-icon>
       </v-list-item>
     </v-list>
   </v-container>
