@@ -23,6 +23,7 @@
 
 <script>
 export default {
+  middleware: 'noDirectAccess',
   name: 'IndexPage',
   created() {
     this.$store.dispatch('user/matchedUsers');

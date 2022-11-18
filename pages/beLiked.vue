@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  middleware: 'noDirectAccess',
   created() {
     // fetch doc ID and User data on Firebase
     this.$store.dispatch('user/getData');
