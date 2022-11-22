@@ -19,7 +19,23 @@ export const state = () => ({
   docID: null,
   isLiked: false,
   isMatched: false,
-  matchedUsers: null
+  matchedUsers: null,
+  hobbies:[
+        { type: '登山', icon: 'mdi-hiking' },
+        { type: '天体観測', icon: 'mdi-weather-night' },
+        { type: 'サウナ', icon: 'mdi-account-cowboy-hat-outline' },
+        { type: 'キャンプ', icon: 'mdi-campfire' },
+        { type: '飲み歩き', icon: 'mdi-beer-outline' },
+        { type: 'サバイバルゲーム', icon: 'mdi-pistol' },
+        { type: '海水浴', icon: 'mdi-beach' },
+        { type: '釣り', icon: 'mdi-fish' },
+        { type: 'サイクリング', icon: 'mdi-bike' },
+        { type: 'スキー', icon: 'mdi-ski' },
+        { type: 'スノーボード', icon: 'mdi-snowboard' },
+        { type: 'サーフィン', icon: 'mdi-surfing' },
+        { type: 'ドローン', icon: 'mdi-drone' },
+        { type: 'ツーリング', icon: 'mdi-motorbike' },
+      ],
 });
 
 export const mutations = {

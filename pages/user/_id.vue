@@ -102,7 +102,9 @@ export default {
       this.btnColor = 'grey';
       this.btnDisable = true;
       const id = this.$route.params.id;
-      this.$store.dispatch('user/addLike', id);
+      this.$store.dispatch('user/addLike', id).then(() => {
+        location.reload();
+      });
     },
   },
   components: { MatchedDialog },
