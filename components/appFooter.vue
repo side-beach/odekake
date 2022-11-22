@@ -34,11 +34,6 @@ export default {
           icon: 'mdi-chat-processing-outline',
           title: 'トーク',
         },
-        odekake: {
-          path: '/odekake',
-          icon: 'mdi-plus-circle-outline',
-          title: 'おでかけ作成',
-        },
         mypage: {
           path: '/mypage',
           icon: 'mdi-account-circle-outline',

@@ -33,47 +33,24 @@
             {{ userData.profile }}
           </v-card>
         </div>
-        <!-- いいねボタン -->
-        <v-btn
-          :color="btnColor"
-          @click="goodBtnPressed()"
-          block
-          rounded
-          class="mt-3"
-          :disabled="btnDisable"
-        >
-          {{ btnMsg }}
-          <v-icon right> mdi-thumb-up </v-icon>
+        <!-- profile edit button -->
+        <v-btn color="accent" block rounded class="mt-3" to="/mypage/edit">
+          プロフィールを編集する
         </v-btn>
       </div>
-      <!-- DIALOG WHEN MATCHED WITH SOMEONE -->
-      <MatchedDialog />
     </v-card>
   </section>
 </template>
 
 <script>
-import MatchedDialog from '~/components/user/matchedDialog.vue';
 export default {
   data() {
-    return {
-      btnColor: 'primary',
-      btnDisable: false,
-      btnMsg: 'いいね',
-    };
+    return {};
   },
   created() {
-    const id = this.$route.params.id;
+    const id = this.$store.getters['auth/getUserUid'];
     this.$store.dispatch('user/getPersonalData', id);
-    // Check see if I have already LIKED.
-    this.$store.dispatch('user/checkLikedUser', id).then(() => {
-      const isLiked = this.$store.getters['user/isLiked'];
-      if (isLiked) {
-        this.btnColor = 'gray';
-        this.btnDisable = true;
-        this.btnMsg = 'いいね済';
-      }
-    });
+    this.$store.dispatch('user/getDocID', id);
   },
   computed: {
     userData: function () {
@@ -96,18 +73,7 @@ export default {
       return age;
     },
   },
-  methods: {
-    goodBtnPressed() {
-      this.btnMsg = 'いいね済';
-      this.btnColor = 'grey';
-      this.btnDisable = true;
-      const id = this.$route.params.id;
-      this.$store.dispatch('user/addLike', id).then(() => {
-        location.reload();
-      });
-    },
-  },
-  components: { MatchedDialog },
+  methods: {},
 };
 </script>
 

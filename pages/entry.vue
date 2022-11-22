@@ -198,7 +198,7 @@
             <v-col><v-btn x-large text @click="page = 2"> 前に戻る </v-btn></v-col>
             <v-spacer></v-spacer>
             <v-col>
-              <v-btn x-large color="primary" @click="regist()">登録する</v-btn>
+              <v-btn x-large color="primary" @click="validate('step3')">登録する</v-btn>
             </v-col>
           </v-row>
         </v-card>
@@ -464,26 +464,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-#upload-label {
-  display: block;
-  box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.5), 0px 2px 4px rgba(0, 0, 0, 0.1),
-    0px 4px 8px rgba(0, 0, 0, 0.1), 0px 8px 16px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 100%;
-  // border: 2px solid #ccc;
-  border-radius: 5px;
-  margin: 10px auto;
-  padding: 10px 5px;
-  cursor: pointer;
-  &:active {
-    box-shadow: none;
-    border: 1px solid #333;
-  }
-}
-
-#imgupload {
-  display: none;
-}
-</style>
