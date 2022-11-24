@@ -5,7 +5,7 @@ import {
   signOut,
   GoogleAuthProvider,
   TwitterAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
 } from 'firebase/auth';
 
 export const state = () => ({
@@ -55,7 +55,7 @@ export const actions = {
     } else if (payload === 'google') {
       provider = new GoogleAuthProvider();
     }
-    await signInWithPopup(auth, provider).then((userCredential) => {
+    await signInWithRedirect(auth, provider).then((userCredential) => {
       const [uid, email] = [userCredential.user.uid, userCredential.user.email];
       // Add User Info to vuex store
       dispatch('addUserInfo', { uid, email }).then((res) => {
