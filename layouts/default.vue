@@ -13,7 +13,7 @@ export default {
   name: 'DefaultLayout',
   computed: {
     isSignInPage() {
-      return this.$route.path == '/auth/login' || this.$route.path == '/auth/signup';
+      return this.$route.path.match(/\/auth\//);
     },
   },
 };
