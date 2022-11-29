@@ -10,7 +10,6 @@ import {
   getDoc,
   getDocs,
   arrayUnion,
-  serverTimestamp,
 } from 'firebase/firestore';
 
 
@@ -20,7 +19,23 @@ export const state = () => ({
   docID: null,
   isLiked: false,
   isMatched: false,
-  matchedUsers: null
+  matchedUsers: null,
+  hobbies:[
+        { type: '登山', icon: 'mdi-hiking' },
+        { type: '天体観測', icon: 'mdi-weather-night' },
+        { type: 'サウナ', icon: 'mdi-account-cowboy-hat-outline' },
+        { type: 'キャンプ', icon: 'mdi-campfire' },
+        { type: '飲み歩き', icon: 'mdi-beer-outline' },
+        { type: 'サバイバルゲーム', icon: 'mdi-pistol' },
+        { type: '海水浴', icon: 'mdi-beach' },
+        { type: '釣り', icon: 'mdi-fish' },
+        { type: 'サイクリング', icon: 'mdi-bike' },
+        { type: 'スキー', icon: 'mdi-ski' },
+        { type: 'スノーボード', icon: 'mdi-snowboard' },
+        { type: 'サーフィン', icon: 'mdi-surfing' },
+        { type: 'ドローン', icon: 'mdi-drone' },
+        { type: 'ツーリング', icon: 'mdi-motorbike' },
+      ],
 });
 
 export const mutations = {
@@ -74,8 +89,7 @@ export const actions = {
       data = doc.data()
       console.log(data)
     })
-
-    commit('setPersonalData', data)
+    commit('setPersonalData', data);
   },
   async addLike({commit, rootGetters, getters, dispatch}, payload){
     const partnerUid = payload;
@@ -177,9 +191,8 @@ export const actions = {
     let matchedUserData = [];
     
     for(let uid of myData.matched){
-      await dispatch("getPersonalData",uid).then(()=>{
-        matchedUserData.push(getters["personalData"]);
-      })
+      await dispatch("getPersonalData",uid)
+      matchedUserData.push(getters["personalData"]);
     }
     commit('setMatchedUserData',matchedUserData);
   }

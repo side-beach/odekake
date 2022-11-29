@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-export default function ({ $firebase, redirect, store, route }) {
+export default async function ({ $firebase, redirect, store, route }) {
   const isLogined = store.getters['auth/isLogined'];
   const auth = getAuth($firebase);
   // ページクローズ、更新などでローカルのログイン状態がfalseにもどったら

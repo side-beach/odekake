@@ -1,20 +1,15 @@
 <template>
   <v-container>
     <v-row justify="start" style="height: 600px">
-      <slot>
-        <v-col xs="6" v-for="(item, idx) in userdata" :key="idx">
-          <UserCard :user-data="item" />
-        </v-col>
-      </slot>
+      <v-col xs="6" v-for="(item, idx) in userdata" :key="idx">
+        <UserCard :user-data="item" />
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
 export default {
-  data() {
-    return {};
-  },
   created() {
     // fetch doc ID and User data on Firebase
     this.$store.dispatch('user/getData');
@@ -24,9 +19,9 @@ export default {
       // Creating a list of users excluding myself.
       const uid = this.$store.getters['auth/getUserUid'];
       let userList = this.$store.getters['user/getDataSet'] ?? [];
-      // console.log({ userList });
+      // 自分,すでにマッチしているユーザーを除外
       userList = userList.filter((val) => {
-        return val.uid !== uid;
+        return val.uid !== uid && !val.matched.some((val) => val == uid);
       });
       return userList;
     },
