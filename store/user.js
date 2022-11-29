@@ -89,8 +89,7 @@ export const actions = {
       data = doc.data()
       console.log(data)
     })
-
-    commit('setPersonalData', data)
+    commit('setPersonalData', data);
   },
   async addLike({commit, rootGetters, getters, dispatch}, payload){
     const partnerUid = payload;
@@ -192,9 +191,8 @@ export const actions = {
     let matchedUserData = [];
     
     for(let uid of myData.matched){
-      await dispatch("getPersonalData",uid).then(()=>{
-        matchedUserData.push(getters["personalData"]);
-      })
+      await dispatch("getPersonalData",uid)
+      matchedUserData.push(getters["personalData"]);
     }
     commit('setMatchedUserData',matchedUserData);
   }

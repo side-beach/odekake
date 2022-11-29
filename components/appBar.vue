@@ -36,11 +36,9 @@ export default {
       pageTitle: 'Home',
     };
   },
-  computed: {},
   watch: {
     $route: function (to, from) {
-      console.log(to.name);
-
+      // console.log(to.name);
       switch (to.name) {
         case 'index':
           this.pageTitle = 'ホーム';

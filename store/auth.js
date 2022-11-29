@@ -109,6 +109,7 @@ export const actions = {
   addUserInfo({ commit }, payload) {
     commit('setLogin', true);
     commit('setUserUid', payload.uid);
+    
     // commit('setUserData', payload);
   },
 };
